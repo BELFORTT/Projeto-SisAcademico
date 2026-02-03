@@ -3,6 +3,7 @@ package br.edu.ifpb.sisacademico.service;
 import br.edu.ifpb.sisacademico.exception.SisAcademicoException;
 import br.edu.ifpb.sisacademico.model.Professor;
 import br.edu.ifpb.sisacademico.repository.ProfessorRepository;
+import java.util.List;
 
 public class ProfessorService {
     private ProfessorRepository repository = new ProfessorRepository();

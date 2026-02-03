@@ -1,5 +1,8 @@
 package br.edu.ifpb.sisacademico.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.edu.ifpb.sisacademico.exception.SisAcademicoException;
 import br.edu.ifpb.sisacademico.model.Aluno;
 import br.edu.ifpb.sisacademico.model.ComponenteCurricular;
@@ -34,5 +37,20 @@ public class MatriculaService {
          Matricula novaMatricula = new Matricula(aluno, componente);
          matriculaRepository.salvar(novaMatricula);
          System.out.println("Matrícula realizada: " + aluno.getNome() + " -> " + componente.getNome());
+    }
+
+    public List<Matricula> buscarMatriculasDoAluno(String matriculaAluno) {
+    List<Matricula> resultado = new ArrayList<>();
+    
+    for (Matricula m : matriculaRepository.listarTodas()) {
+        if (m.getAluno().getMatricula().equals(matriculaAluno)) {
+            resultado.add(m);
+        }
+    }
+    return resultado;
+}
+
+    public List<Matricula> listarTodasMatriculas() {
+        return matriculaRepository.listarTodas();
     }
 }

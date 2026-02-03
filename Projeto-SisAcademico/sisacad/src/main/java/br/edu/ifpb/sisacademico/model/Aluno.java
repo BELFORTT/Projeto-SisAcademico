@@ -8,5 +8,4 @@ import lombok.Data;
 public class Aluno {
     private String matricula;
     private String nome;
-    // O colega irá implementar a lista de matrículas/vínculos depois
 }

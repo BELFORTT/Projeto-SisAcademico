@@ -8,7 +8,7 @@ public abstract class ComponenteCurricular {
     private int cargaHoraria;
     private Professor professorResponsavel;
 
-    // Método abstrato: cada filho decide como calcular seu resultado
+    // Método abstrato: cada filho decide como calcular seu resultado -> Disciplina e Estágio
     // Requisito: "formas diferentes... adotar regras próprias" [cite: 12, 13]
     public abstract double calcularMediaFinal();
 }

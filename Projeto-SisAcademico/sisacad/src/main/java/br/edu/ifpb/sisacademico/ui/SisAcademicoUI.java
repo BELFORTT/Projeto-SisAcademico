@@ -3,6 +3,8 @@ package br.edu.ifpb.sisacademico.ui;
 import br.edu.ifpb.sisacademico.exception.SisAcademicoException;
 import br.edu.ifpb.sisacademico.model.Aluno;
 import br.edu.ifpb.sisacademico.model.ComponenteCurricular;
+import br.edu.ifpb.sisacademico.model.Matricula;
+import br.edu.ifpb.sisacademico.model.Disciplina;
 import br.edu.ifpb.sisacademico.model.Professor;
 import br.edu.ifpb.sisacademico.service.AlunoService;
 import br.edu.ifpb.sisacademico.service.ComponenteService;
@@ -11,6 +13,7 @@ import br.edu.ifpb.sisacademico.service.ProfessorService;
 
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.List;
 
 public class SisAcademicoUI {
     private Scanner scanner = new Scanner(System.in);
@@ -34,12 +37,14 @@ public class SisAcademicoUI {
                 "Cadastrar Estágio (UC04)",
                 "Matricular em Disciplina (UC05)",
                 "Matricular em Estágio (UC06)",
-                "Listar Alunos [EXTRA]",           // <--- NOVO
-                "Listar Professores [EXTRA]",      // <--- NOVO
-                "Listar Componentes (UC11)",       // Já inclui Disciplinas
-                "Registrar Nota (UC07) [BELFORT]",
-                "Registrar Avaliação Estágio (UC08) [BELFORT]",
-                "Calcular Resultados (UC09) [BELFORT]"
+                "Registrar Nota (UC07)",
+                "Registrar avaliação em Estágio (UC08)",
+                "Calcular resultado de aluno em componentes acadêmicos (UC09)",
+                "Consultar situação de aluno específico (UC10)",     
+                "Listar Componentes (UC11)", // Já inclui Disciplinas
+                "Solicitar consulta de detalhes de avaliação para aluno/disciplina (UC12)",
+                "Solicitar consulta sobre todos os alunos matriculados (UC13)",   
+                "Listar Professores"
             ), 
             "Escolha uma opção: ", 
             scanner
@@ -69,12 +74,17 @@ public class SisAcademicoUI {
             case 3 -> cadastrarDisciplina();
             case 4 -> cadastrarEstagio();
             case 5 -> matricularAluno();
-            case 6 -> matricularAluno();
-            case 7 -> listarAlunos();              // <--- NOVO
-            case 8 -> listarProfessores();         // <--- NOVO
-            case 9 -> compService.listarComponentes();
+            case 6 -> matricularAluno();    
+            case 7 -> registrarDesempenho();
+            case 8 -> registrarDesempenho();
+            case 9 -> consultarSituacaoAluno();
+            case 10 -> consultarSituacaoAluno();
+            case 11 -> compService.listarComponentes();
+            case 12 -> consultarDetalhesAvaliacao();
+            case 13 -> listarAlunos();              
+            case 14 -> listarProfessores();
             case 0 -> System.out.println("Saindo...");
-            default -> System.out.println("Funcionalidade do Colega (Belfort) ou Inválida.");
+            default -> System.out.println("Opcao inválida");
         }
     }
 
@@ -142,15 +152,77 @@ public class SisAcademicoUI {
         System.out.println(Cores.VERDE + "Matrícula realizada!" + Cores.RESET);
     }
     
-    private void listarAlunos() {
-        System.out.println("\n--- LISTA DE ALUNOS ---");
-        var alunos = alunoService.listarAlunos();
-        if (alunos.isEmpty()) {
-            System.out.println("Nenhum aluno cadastrado.");
+    private void registrarDesempenho() {
+        System.out.print("Matrícula do Aluno: ");
+        String mat = scanner.nextLine();
+        List<Matricula> matriculas = matService.buscarMatriculasDoAluno(mat);
+
+        if (matriculas.isEmpty()) {
+            throw new SisAcademicoException("Nenhuma matrícula encontrada");
+        }
+
+        System.out.println("Selecione o componente: ");
+        for (int i = 0; i < matriculas.size(); i++) {
+            System.out.println(i + " - " + matriculas.get(i).getComponente().getNome());
+        }
+        int escolha = Integer.parseInt(scanner.nextLine());
+        Matricula m = matriculas.get(escolha);
+
+        System.out.print("Informe a nota/avaliação: ");
+        double valor = Double.parseDouble(scanner.nextLine());
+
+        if (m.getComponente() instanceof Disciplina) {
+            m.adicionarNota(valor);
         } else {
-            for (Aluno a : alunos) {
-                System.out.println("Matrícula: " + a.getMatricula() + " | Nome: " + a.getNome());
+            m.setNotaEstagio(valor);
+        }
+
+        System.out.println(Cores.VERDE + "Nota registrada!" + Cores.RESET);
+    }
+
+    private void consultarSituacaoAluno() {
+        System.out.print("Matrícula do Aluno: ");
+        String mat = scanner.nextLine();
+        List<Matricula> matriculas = matService.buscarMatriculasDoAluno(mat);
+
+        if (matriculas.isEmpty()) {
+            throw new SisAcademicoException("Nenhuma matrícula encontrada");
+        }
+        
+        System.out.println("\n --- Situação Acadêmica ---");
+        for (Matricula m : matriculas) {
+            System.out.printf("Componente: %s | Média: %.2f | Situação: %s%s%n", m.getComponente().getNome(), m.getMedia(), (m.getSituacao().equals("APROVADO") ?  Cores.VERDE : Cores.VERMELHO), m.getSituacao() + Cores.RESET);
+        }
+    }
+
+    private void consultarDetalhesAvaliacao() {
+        System.out.print("Matrícula do Aluno: ");
+        String mat = scanner.nextLine();
+        List<Matricula> matriculas = matService.buscarMatriculasDoAluno(mat);
+
+        for (Matricula m : matriculas) {
+            if (m.getComponente() instanceof Disciplina) {
+                System.out.println("Disciplina: " + m.getComponente().getNome());
+                System.out.println("Notas: " + m.getNotas());
+                System.out.println("Média Final: " + m.getMedia());
+                System.out.println("Situação: " + m.getSituacao());
             }
+        }
+    }
+
+    private void listarAlunos() {
+        System.out.println("\n" + Cores.AZUL + "=== RELATÓRIO GERAL DE ALUNOS ===" + Cores.RESET);
+        List<Matricula> todas = matService.listarTodasMatriculas();
+        if (todas.isEmpty()) {
+            System.out.println("Nenhuma matrícula registrada.");
+            return;
+        
+        }
+        for (Matricula m : todas) {
+            System.out.printf("Aluno: %-15s | Comp: %-15s | Situação: %s%n", 
+            m.getAluno().getNome(), 
+            m.getComponente().getNome(), 
+            m.getSituacao());
         }
     }
 
