@@ -90,6 +90,11 @@ public class SisAcademicoUI {
 
     
     private void cadastrarAluno() {
+        System.out.println("\n--- Lista Atual de Alunos ---");
+        listarAlunos(); // 
+        System.out.println("-----------------------------");
+        
+        System.out.println(">> NOVO CADASTRO:");
         System.out.print("Matrícula: ");
         String mat = scanner.nextLine();
         System.out.print("Nome: ");
@@ -99,6 +104,11 @@ public class SisAcademicoUI {
     }
 
     private void cadastrarProfessor() {
+        System.out.println("\n--- Lista Atual de Professores ---");
+        listarProfessores(); // <--- CHAMA A LISTAGEM AQUI
+        System.out.println("----------------------------------");
+
+        System.out.println(">> NOVO CADASTRO:");
         System.out.print("Matrícula: ");
         String mat = scanner.nextLine();
         System.out.print("Nome: ");
@@ -108,6 +118,11 @@ public class SisAcademicoUI {
     }
 
     private void cadastrarDisciplina() {
+        // Mostra os professores para o usuário escolher o responsável
+        System.out.println("\n--- Professores Disponíveis ---");
+        listarProfessores();
+
+        System.out.println("-------------------------------");
         System.out.print("Nome Disciplina: ");
         String nome = scanner.nextLine();
         System.out.print("Carga Horária: ");
@@ -138,6 +153,14 @@ public class SisAcademicoUI {
     }
 
     private void matricularAluno() {
+        // Ajuda o usuário mostrando as opções
+        System.out.println("\n--- Alunos ---");
+        listarAlunos();
+        System.out.println("\n--- Componentes ---");
+        compService.listarComponentes();
+        System.out.println("-------------------");
+
+
         System.out.print("Matrícula Aluno: ");
         String mat = scanner.nextLine();
         System.out.print("Nome Componente: ");
