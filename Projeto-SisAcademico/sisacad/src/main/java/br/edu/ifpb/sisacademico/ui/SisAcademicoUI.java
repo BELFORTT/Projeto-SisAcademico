@@ -91,7 +91,7 @@ public class SisAcademicoUI {
     
     private void cadastrarAluno() {
         System.out.println("\n--- Lista Atual de Alunos ---");
-        listarAlunos(); // 
+        listarAlunos(); // <--- CHAMA A LISTAGEM DOS ALUNOS
         System.out.println("-----------------------------");
         
         System.out.println(">> NOVO CADASTRO:");
@@ -105,7 +105,7 @@ public class SisAcademicoUI {
 
     private void cadastrarProfessor() {
         System.out.println("\n--- Lista Atual de Professores ---");
-        listarProfessores(); // <--- CHAMA A LISTAGEM AQUI
+        listarProfessores(); // <--- CHAMA A LISTAGEM DOS PROF
         System.out.println("----------------------------------");
 
         System.out.println(">> NOVO CADASTRO:");
@@ -251,7 +251,7 @@ public class SisAcademicoUI {
 
     private void listarProfessores() {
         System.out.println("\n--- LISTA DE PROFESSORES ---");
-        var profs = profService.listarProfessores(); // Certifique-se de criar este método no Service
+        var profs = profService.listarProfessores(); 
         if (profs.isEmpty()) {
             System.out.println("Nenhum professor cadastrado.");
         } else {
